@@ -67,4 +67,15 @@ wg_long <- wg_long %>%
   left_join(avg_min_wg, by = "Year")
 wg_long <- wg_long %>% mutate(rel_min_wg = min_wg/avg_min_wg)
 view(wg_long)
-# 
+
+# transform immigration data to long format
+imm_long <- imm %>%
+  pivot_longer(
+    cols = -c(CTR, Country),
+    names_to = "Year",
+    values_to = "imm"
+  )
+dat <- imm_long %>% 
+  left_join(wg_long, by = c("CTR", "Country", "Year")) %>%
+  drop_na()
+view(dat)
