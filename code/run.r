@@ -47,7 +47,6 @@ setwd("C:\\Users\\ozzyz\\Documents\\University\\Immigration\\economics-of-migrat
 
 imm <- read_excel("data/immigration_eurostat_from_europe.xlsx")
 wg <- read_excel("data/min_wage_eurostat.xlsx")
-view(wg)
 
 # average minimum wage every year
 wg_long <- wg %>%
@@ -64,4 +63,8 @@ wg_long <- wg_long %>%
   )
 wg_long <- wg_long %>% group_by(CTR, Country, Year) %>% summarise(min_wg = mean(min_wg, na.rm = TRUE))
 avg_min_wg <- wg_long %>% group_by(Year) %>% summarise(avg_min_wg = mean(min_wg, na.rm = TRUE))
+wg_long <- wg_long %>% 
+  left_join(avg_min_wg, by = "Year")
+wg_long <- wg_long %>% mutate(rel_min_wg = min_wg/avg_min_wg)
+view(wg_long)
 # 
