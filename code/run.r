@@ -50,67 +50,11 @@ EM_AGE_SEX <- "migr_emi2" # Immigration by age and sex
 MIN_WAGE <- "earn_mw_cur" # Minimum wages
 POPULATION <- "demo_pjan" # Population
 
-# imm <- read_excel("data/immigration_eurostat_from_europe.xlsx")
-# em <- read_excel("data/emigration_eurostat_from_europe.xlsx")
-# wg <- read_excel("data/min_wage_eurostat.xlsx")
-
-# # average minimum wage every year
-# wg_long <- wg %>%
-#   pivot_longer(
-#     cols = -c(CTR, Country),
-#     names_to = "Year",
-#     values_to = "min_wg"
-#   )
-# wg_long <- wg_long %>%
-#     separate(
-#     Year,
-#     into = c("Year", "Semester"),
-#     sep = "-S"
-#   )
-# wg_long <- wg_long %>% group_by(CTR, Country, Year) %>% summarise(min_wg = mean(min_wg, na.rm = TRUE))
-# avg_min_wg <- wg_long %>% group_by(Year) %>% summarise(avg_min_wg = mean(min_wg, na.rm = TRUE))
-# wg_long <- wg_long %>% 
-#   left_join(avg_min_wg, by = "Year")
-# wg_long <- wg_long %>% mutate(rel_min_wg = min_wg/avg_min_wg)
-# view(wg_long)
-
-# # transform immigration data to long format
-# imm_long <- imm %>%
-#   pivot_longer(
-#     cols = -c(CTR, Country),
-#     names_to = "Year",
-#     values_to = "imm"
-#   )
-# em_long <- em %>%
-#   pivot_longer(
-#     cols = -c(CTR, Country),
-#     names_to = "Year",
-#     values_to = "em"
-#   )
-# dat <- imm_long %>% 
-#   left_join(wg_long, by = c("CTR", "Country", "Year")) %>%
-#   left_join(em_long, by = c("CTR", "Country", "Year")) %>%
-#   drop_na()
-
-# # Create lagged variables for rel_min_wg
-# dat <- dat %>%
-#   group_by(Country) %>%
-#   arrange(Year) %>%
-#   mutate(
-#     rel_min_wg_lag1 = lag(rel_min_wg, 1),
-#     rel_min_wg_lag2 = lag(rel_min_wg, 2),
-#     rel_min_wg_lag3 = lag(rel_min_wg, 3)
-#   ) %>%
-#   ungroup()
-#   # Fill NA values with the mean of the respective column
-#   # dat <- dat %>%
-#   #   mutate(across(c(rel_min_wg, rel_min_wg_lag1, rel_min_wg_lag2, rel_min_wg_lag3), ~ ifelse(is.na(.), 0, .)))
-# # Run the regression
-# model_1 <- lm(imm ~ rel_min_wg + rel_min_wg_lag1 + rel_min_wg_lag2 + rel_min_wg_lag3 + Country + Year, data = dat)
-# model_2 <- lm(em ~ rel_min_wg + rel_min_wg_lag1 + rel_min_wg_lag2 + rel_min_wg_lag3 + Country + Year, data = dat)
-# # Summary of the model
-# summary(model_1)
-# summary(model_2)
+schengen <- read_excel("data/schengen_date.xlsx")
+# Add Schengen dummy variable
+schengen <- schengen %>% 
+  mutate(schengen_year = year(Schengen_Date)) %>%
+  mutate(schengen_year = ifelse(is.na(schengen_year), Inf, schengen_year))
 
 pop <- get_eurostat(POPULATION, time_format = "num", type = "label")
 pop <- pop %>% filter(age == "Total", sex == "Total") %>%
@@ -132,7 +76,9 @@ migration_over_rel_min_wg <- function(imm, em, title){
     left_join(imm, by = c("geo", "TIME_PERIOD")) %>%
     left_join(em, by = c("geo", "TIME_PERIOD")) %>%
     left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD"))
-
+  data <- data %>%
+    left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
+    mutate(schengen_dummy = ifelse(TIME_PERIOD > schengen_year, 1, 0))
   # Create lagged variables for rel_min_wg
   data <- data %>%
     group_by(geo) %>%
@@ -171,8 +117,10 @@ migration_over_rel_min_wg <- function(imm, em, title){
       mutate(!!sym(var) := zoo::na.locf(!!sym(var), na.rm = FALSE)) %>%
       ungroup()
   }
-  formula_1 <- as.formula(paste("log(imm) ~ geo + factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
-  formula_2 <- as.formula(paste("log(em) ~ geo + factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
+  formula_1 <- as.formula(paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + ", paste(wg_vars, collapse = " + ")))
+  formula_2 <- as.formula(paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + ", paste(wg_vars, collapse = " + ")))
+  # formula_1 <- as.formula(paste("log(imm) ~ geo * factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
+  # formula_2 <- as.formula(paste("log(em) ~ geo * factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
   model_1 <- lm(formula_1, data = data, weights = pop)
   model_2 <- lm(formula_2, data = data, weights = pop)
   # Summary of the model
@@ -257,22 +205,3 @@ imm_females <- imm_base %>%
 em_females <- em_base %>%
   filter(sex == "Females", TIME_PERIOD <= 2015)
 migration_over_rel_min_wg(imm_females, em_females, "females")
-
-data %>% group_by(geo) %>% summarise(imm = sum(!is.na(imm)), em = sum(!is.na(em))) %>% view()
-# Plot immigration over relative minimum wage
-ggplot(drop_na(data), aes(x = rel_min_wg, y = imm)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE, color = "blue") +
-  labs(title = "Immigration vs Relative Minimum Wage",
-       x = "Relative Minimum Wage",
-       y = "Immigration") +
-  theme_minimal()
-
-# Plot emigration over relative minimum wage
-ggplot(drop_na(data), aes(x = rel_min_wg, y = em)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE, color = "blue") +
-  labs(title = "Emigration vs Relative Minimum Wage",
-       x = "Relative Minimum Wage",
-       y = "Emigration") +
-  theme_minimal()
