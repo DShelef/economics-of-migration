@@ -152,7 +152,7 @@ migration_over_rel_min_wg <- function(imm, em, title){
   g <- ggplot(plot_data, aes(x = Variable, y = Estimate_1)) +
     geom_point() +
     geom_errorbar(aes(ymin = Estimate_1 - SE_1, ymax = Estimate_1 + SE_1), width = 0.2) +
-    labs(title = "Estimates and Standard Errors for Immigration Model",
+    labs(title = paste("Immigration", title),
         x = "Variables",
         y = "Estimate") +
       ylim(c(-4, 4)) + 
@@ -169,7 +169,7 @@ migration_over_rel_min_wg <- function(imm, em, title){
       aes(ymin = Estimate_2 - SE_2, ymax = Estimate_2 + SE_2), width = 0.2
     ) +
     ylim(c(-4, 4)) + 
-    labs(title = "Estimates and Standard Errors for Immigration Model",
+    labs(title = paste("Emigration", title),
         x = "Variables",
         y = "Estimate") +
     theme_minimal()
