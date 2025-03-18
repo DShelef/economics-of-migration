@@ -49,6 +49,9 @@ IMM_AGE_SEX <- "migr_imm8" # Emigration by age and sex
 EM_AGE_SEX <- "migr_emi2" # Immigration by age and sex
 MIN_WAGE <- "earn_mw_cur" # Minimum wages
 POPULATION <- "demo_pjan" # Population
+IMM_AGE_GROUP_SEX_CITIZENSHIP <- "migr_imm1ctz"
+EM_AGE_GROUP_SEX_CITIZENSHIP <- "migr_emi1ctz"
+GDP_PER_CAPITA <- "sdg_08_10"
 
 schengen <- read_excel("data/schengen_date.xlsx")
 # Add Schengen dummy variable
@@ -59,26 +62,41 @@ schengen <- schengen %>%
 pop <- get_eurostat(POPULATION, time_format = "num", type = "label")
 pop <- pop %>% filter(age == "Total", sex == "Total") %>%
   rename(pop = "values")
-wg <- get_eurostat(MIN_WAGE, type = "label")
-wg <- wg %>% 
+wg_base <- get_eurostat(MIN_WAGE, type = "label")
+wg_base <- wg_base %>% 
   filter(month(TIME_PERIOD) == 1, currency == "Purchasing Power Standard") %>%
   select(c(geo, TIME_PERIOD, values)) %>%
   mutate(TIME_PERIOD = year(TIME_PERIOD)) %>%
   rename(wg = "values")
 # average minimum wage every year
-avg_min_wg <- wg %>% group_by(TIME_PERIOD) %>%
+avg_min_wg_base <- wg_base %>% group_by(TIME_PERIOD) %>%
   summarise(avg_min_wg = mean(wg, na.rm = TRUE))
-wg <- wg %>% left_join(avg_min_wg, by = "TIME_PERIOD")
-wg <- wg %>% mutate(rel_min_wg = wg/avg_min_wg)
+wg_base <- wg_base %>% left_join(avg_min_wg_base, by = "TIME_PERIOD")
+wg_base <- wg_base %>% mutate(rel_min_wg = wg/avg_min_wg)
+wg_base$wg <- ifelse(is.na(wg_base$wg), 0, wg_base$wg)
+wg_base$rel_min_wg <- ifelse(is.na(wg_base$rel_min_wg), 0, wg_base$rel_min_wg)
 
-migration_over_rel_min_wg <- function(imm, em, title){
+gdp <- get_eurostat(GDP_PER_CAPITA, time_format = "num", type = "label")
+gdp <- gdp %>% filter(
+  freq == "Annual", 
+  unit == "Chain linked volumes (2020), euro per capita",
+  na_item == "Gross domestic product at market prices"
+) %>%
+  rename(gdp = "values")
+
+migrant_stocks <- read_excel("data/migrant_stocks.xlsx")
+
+migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = TRUE){
   data <- wg %>%
     left_join(imm, by = c("geo", "TIME_PERIOD")) %>%
     left_join(em, by = c("geo", "TIME_PERIOD")) %>%
-    left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD"))
+    left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD")) %>%
+    left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD"))
+  if(use_schengen_dummy){
   data <- data %>%
     left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
     mutate(schengen_dummy = ifelse(TIME_PERIOD > schengen_year, 1, 0))
+  }
   # Create lagged variables for rel_min_wg
   data <- data %>%
     group_by(geo) %>%
@@ -89,21 +107,36 @@ migration_over_rel_min_wg <- function(imm, em, title){
       rel_min_wg_lag3 = lag(rel_min_wg, 3),
       rel_min_wg_lead1 = lead(rel_min_wg, 1),
       rel_min_wg_lead2 = lead(rel_min_wg, 2),
-      rel_min_wg_lead3 = lead(rel_min_wg, 3)
+      rel_min_wg_lead3 = lead(rel_min_wg, 3),
+      wg_lag1 = lag(wg, 1),
+      wg_lag2 = lag(wg, 2),
+      wg_lag3 = lag(wg, 3),
+      wg_lead1 = lead(wg, 1),
+      wg_lead2 = lead(wg, 2),
+      wg_lead3 = lead(wg, 3)
     ) %>%
     ungroup()
 
+  # wg_vars <- c(
+  #   "rel_min_wg_lead3",
+  #   "rel_min_wg_lead2",
+  #   "rel_min_wg_lead1",
+  #   "rel_min_wg",
+  #   "rel_min_wg_lag1",
+  #   "rel_min_wg_lag2",
+  #   "rel_min_wg_lag3"
+  # )
   wg_vars <- c(
-    "rel_min_wg_lead3",
-    "rel_min_wg_lead2",
-    "rel_min_wg_lead1",
-    "rel_min_wg",
-    "rel_min_wg_lag1",
-    "rel_min_wg_lag2",
-    "rel_min_wg_lag3"
+    "wg_lead3",
+    "wg_lead2",
+    "wg_lead1",
+    "wg",
+    "wg_lag1",
+    "wg_lag2",
+    "wg_lag3"
   )
   # Fill missing values for lag variables with the closest value after it
-  for (var in c("rel_min_wg_lag1", "rel_min_wg_lag2", "rel_min_wg_lag3")) {
+  for (var in wg_vars[grep("lag", wg_vars)]) {
     data <- data %>%
       group_by(geo) %>%
       mutate(!!sym(var) := zoo::na.locf(!!sym(var), fromLast = TRUE, na.rm = FALSE)) %>%
@@ -111,16 +144,27 @@ migration_over_rel_min_wg <- function(imm, em, title){
   }
 
   # Fill missing values for lead variables with the closest value before it
-  for (var in c("rel_min_wg_lead1", "rel_min_wg_lead2", "rel_min_wg_lead3")) {
+  for (var in wg_vars[grep("lead", wg_vars)]) {
     data <- data %>%
       group_by(geo) %>%
       mutate(!!sym(var) := zoo::na.locf(!!sym(var), na.rm = FALSE)) %>%
       ungroup()
   }
-  formula_1 <- as.formula(paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + ", paste(wg_vars, collapse = " + ")))
-  formula_2 <- as.formula(paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + ", paste(wg_vars, collapse = " + ")))
-  # formula_1 <- as.formula(paste("log(imm) ~ geo * factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
-  # formula_2 <- as.formula(paste("log(em) ~ geo * factor(TIME_PERIOD) + ", paste(wg_vars, collapse = " + ")))
+  if(use_schengen_dummy){
+    formula_1 <- as.formula(
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_2 <- as.formula(
+      paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + ",
+      paste(wg_vars, collapse = " + ")))
+  } else {
+    formula_1 <- as.formula(
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + gdp + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_2 <- as.formula(
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + gdp + ",
+      paste(wg_vars, collapse = " + ")))
+  }
   model_1 <- lm(formula_1, data = data, weights = pop)
   model_2 <- lm(formula_2, data = data, weights = pop)
   # Summary of the model
@@ -155,7 +199,7 @@ migration_over_rel_min_wg <- function(imm, em, title){
     labs(title = paste("Immigration", title),
         x = "Variables",
         y = "Estimate") +
-      ylim(c(-4, 4)) + 
+      # ylim(c(-4, 4)) +
     theme_minimal()
   print(g)
   dev.off()
@@ -168,7 +212,7 @@ migration_over_rel_min_wg <- function(imm, em, title){
     geom_errorbar(
       aes(ymin = Estimate_2 - SE_2, ymax = Estimate_2 + SE_2), width = 0.2
     ) +
-    ylim(c(-4, 4)) + 
+    # ylim(c(-4, 4)) + 
     labs(title = paste("Emigration", title),
         x = "Variables",
         y = "Estimate") +
@@ -192,16 +236,67 @@ em_total <- em_base %>%
   filter(TIME_PERIOD <= 2015) %>%
   group_by(geo, TIME_PERIOD) %>% 
   summarise(em = sum(em, na.rm = TRUE))
-migration_over_rel_min_wg(imm_total, em_total, "total")
+migration_over_rel_min_wg(wg_base, imm_total, em_total, "total")
 
 imm_males <- imm_base %>% 
   filter(sex == "Males", TIME_PERIOD <= 2015)
 em_males <- em_base %>%
   filter(sex == "Males", TIME_PERIOD <= 2015)
-migration_over_rel_min_wg(imm_males, em_males, "males")
+migration_over_rel_min_wg(wg_base, imm_males, em_males, "males")
 
 imm_females <- imm_base %>% 
   filter(sex == "Females", TIME_PERIOD <= 2015)
 em_females <- em_base %>%
   filter(sex == "Females", TIME_PERIOD <= 2015)
-migration_over_rel_min_wg(imm_females, em_females, "females")
+migration_over_rel_min_wg(wg_base, imm_females, em_females, "females")
+
+schengen_2001 <- schengen %>% 
+  filter(schengen_year <= 2001) %>%
+  select(geo)
+imm_citizenship <- get_eurostat(IMM_AGE_GROUP_SEX_CITIZENSHIP, time_format = "num", type = "label")
+em_citizenship <- get_eurostat(EM_AGE_GROUP_SEX_CITIZENSHIP, time_format = "num", type = "label")
+
+wg_schengen <- wg_base %>% 
+  filter(geo %in% schengen_2001$geo)
+avg_min_wg_schengen <- wg_schengen %>% group_by(TIME_PERIOD) %>%
+  summarise(avg_min_wg = mean(wg, na.rm = TRUE)
+  )
+wg_schengen <- wg_schengen %>% select(-avg_min_wg)
+wg_schengen <- wg_schengen %>% left_join(avg_min_wg_schengen, by = "TIME_PERIOD")
+wg_schengen <- wg_schengen %>% mutate(rel_min_wg = wg/avg_min_wg)
+
+imm_citizenship_shcengen <- imm_citizenship %>% 
+  filter(
+    freq == "Annual",
+    citizen %in% schengen_2001$geo,
+    agedef == "Age in completed years",
+    age == "Total",
+    unit == "Number",
+    sex == "Total",
+    geo %in% schengen_2001$geo
+  )
+imm_citizenship_shcengen <- imm_citizenship_shcengen %>%
+  group_by(geo, TIME_PERIOD) %>%
+  summarise(imm = sum(values, na.rm = TRUE))
+
+em_citizenship_shcengen <- em_citizenship %>%
+  filter(
+    freq == "Annual",
+    citizen %in% schengen_2001$geo,
+    agedef == "Age in completed years",
+    age == "Total",
+    unit == "Number",
+    sex == "Total",
+    geo %in% schengen_2001$geo
+  )
+em_citizenship_shcengen <- em_citizenship_shcengen %>%
+  group_by(geo, TIME_PERIOD) %>%
+  summarise(em = sum(values, na.rm = TRUE))
+
+migration_over_rel_min_wg(
+  wg_schengen,
+  imm_citizenship_shcengen,
+  em_citizenship_shcengen,
+  "citizenship_schengen",
+  use_schengen_dummy = FALSE
+)
