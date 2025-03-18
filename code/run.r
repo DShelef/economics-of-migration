@@ -85,13 +85,32 @@ gdp <- gdp %>% filter(
   rename(gdp = "values")
 
 migrant_stocks <- read_excel("data/migrant_stocks.xlsx")
+migrant_stocks <- migrant_stocks %>%
+  pivot_longer(
+    cols = -geo,
+    names_to = "TIME_PERIOD",
+    values_to = "migrant_stock"
+  ) %>%
+  mutate(TIME_PERIOD = as.numeric(TIME_PERIOD))
+# Function to linearly interpolate missing years
+interpolate_years <- function(df, value_col) {
+  df %>%
+    group_by(geo) %>%
+    complete(TIME_PERIOD = full_seq(TIME_PERIOD, 1)) %>%
+    arrange(geo, TIME_PERIOD) %>%
+    mutate(!!value_col := zoo::na.approx(!!sym(value_col), na.rm = FALSE)) %>%
+    ungroup()
+}
+
+migrant_stocks <- interpolate_years(migrant_stocks, "migrant_stock")
 
 migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = TRUE){
   data <- wg %>%
     left_join(imm, by = c("geo", "TIME_PERIOD")) %>%
     left_join(em, by = c("geo", "TIME_PERIOD")) %>%
     left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD")) %>%
-    left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD"))
+    left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD")) %>%
+    left_join(migrant_stocks, by = c("geo", "TIME_PERIOD"))
   if(use_schengen_dummy){
   data <- data %>%
     left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
@@ -152,17 +171,17 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
   }
   if(use_schengen_dummy){
     formula_1 <- as.formula(
-      paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + ",
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
     formula_2 <- as.formula(
-      paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + ",
+      paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
   } else {
     formula_1 <- as.formula(
-      paste("log(imm) ~ geo + factor(TIME_PERIOD) + gdp + ",
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
     formula_2 <- as.formula(
-      paste("log(em) ~ geo + factor(TIME_PERIOD) + gdp + ",
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
   }
   model_1 <- lm(formula_1, data = data, weights = pop)
