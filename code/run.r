@@ -15,7 +15,8 @@ library(Cairo)
 
 library(e1071)
 library(numDeriv)
-
+library(tinytex)
+library(stargazer)
 library(statar)
 
 library(fixest)
@@ -116,6 +117,7 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
     left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
     mutate(schengen_dummy = ifelse(TIME_PERIOD > schengen_year, 1, 0))
   }
+  data$net <- data$imm - data$em
   # Create lagged variables for rel_min_wg
   data <- data %>%
     group_by(geo) %>%
@@ -170,37 +172,83 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       ungroup()
   }
   if(use_schengen_dummy){
-    formula_1 <- as.formula(
-      paste("log(imm) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + migrant_stock + ",
+    formula_imm_no_controls <- as.formula(
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + ",
       paste(wg_vars, collapse = " + ")))
-    formula_2 <- as.formula(
-      paste("log(em) ~ geo + factor(TIME_PERIOD) * schengen_dummy + gdp + migrant_stock + ",
+    formula_em_no_controls <- as.formula(
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_imm_controls <- as.formula(
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_em_controls <- as.formula(
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_net_no_controls <- as.formula(
+      paste("log(net) ~ geo + factor(TIME_PERIOD) + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_net_controls <- as.formula(
+      paste("log(net) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
   } else {
-    formula_1 <- as.formula(
+    formula_imm_no_controls <- as.formula(
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_em_no_controls <- as.formula(
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_imm_controls <- as.formula(
       paste("log(imm) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
-    formula_2 <- as.formula(
+    formula_em_controls <- as.formula(
       paste("log(em) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
+    formula_net_no_controls <- as.formula(
+      paste("log(net) ~ geo + factor(TIME_PERIOD) + ",
+      paste(wg_vars, collapse = " + ")))
+    formula_net_controls <- as.formula(
+      paste("log(net) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
+      paste(wg_vars, collapse = " + ")))
   }
-  model_1 <- lm(formula_1, data = data, weights = pop)
-  model_2 <- lm(formula_2, data = data, weights = pop)
-  # Summary of the model
-  print(summary(model_1))
-  print(summary(model_2))
+# Load necessary libraries
+library(sandwich)
+library(lmtest)
+library(stargazer)
 
-  # Extract coefficients and standard errors
-  coef_1 <- summary(model_1)$coefficients
-  coef_2 <- summary(model_2)$coefficients
+# Custom summary function to replace standard errors with robust ones
+robust_summary <- function(model) {
+  robust_se <- sqrt(diag(vcovHC(model, type = "HC1")))
+  summary_model <- summary(model)
+  summary_model$coefficients[, "Std. Error"] <- robust_se
+  summary_model$coefficients[, "t value"] <- summary_model$coefficients[, "Estimate"] / robust_se
+  summary_model$coefficients[, "Pr(>|t|)"] <- 2 * pt(-abs(summary_model$coefficients[, "t value"]), df = summary_model$df[2])
+  return(summary_model)
+}
+
+model_imm_no_controls <- lm(formula_imm_no_controls, data = data, weights = pop)
+model_em_no_controls <- lm(formula_em_no_controls, data = data, weights = pop)
+model_imm_controls <- lm(formula_imm_controls, data = data, weights = pop)
+model_em_controls <- lm(formula_em_controls, data = data, weights = pop)
+model_net_no_controls <- lm(formula_net_no_controls, data = data, weights = pop)
+model_net_controls <- lm(formula_net_controls, data = data, weights = pop)
+
+# Replace standard errors with robust ones
+summary_imm_no_controls <- robust_summary(model_imm_no_controls)
+summary_em_no_controls <- robust_summary(model_em_no_controls)
+summary_imm_controls <- robust_summary(model_imm_controls)
+summary_em_controls <- robust_summary(model_em_controls)
+summary_net_no_controls <- robust_summary(model_net_no_controls)
+summary_net_controls <- robust_summary(model_net_controls)
 
   # Create a data frame for plotting
   plot_data <- data.frame(
     Variable = wg_vars,
-    Estimate_1 = coef_1[wg_vars, "Estimate"],
-    SE_1 = coef_1[wg_vars, "Std. Error"],
-    Estimate_2 = coef_2[wg_vars, "Estimate"],
-    SE_2 = coef_2[wg_vars, "Std. Error"]
+    Estimate_1 = summary_imm_controls$coefficients[wg_vars, "Estimate"],
+    SE_1 = summary_imm_controls$coefficients[wg_vars, "Std. Error"],
+    Estimate_2 = summary_em_controls$coefficients[wg_vars, "Estimate"],
+    SE_2 = summary_em_controls$coefficients[wg_vars, "Std. Error"],
+    Estimate_3 = summary_net_controls$coefficients[wg_vars, "Estimate"],
+    SE_3 = summary_net_controls$coefficients[wg_vars, "Std. Error"]
   )
 
   # Plot the estimates and standard errors for model 1
@@ -209,7 +257,6 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
     mutate(Variable = factor(Variable, levels = wg_vars)) %>%
     arrange(Variable)
 
-  # pdf(paste0("output/imm_over_min_wage_", title, ".pdf"), width = 8, height = 6)
   png(paste0("output/imm_over_min_wage_", title, ".png"), width = 8, height = 6, units = "in", res = 300)
   # Plot the estimates and standard errors for model 1
   g <- ggplot(plot_data, aes(x = Variable, y = Estimate_1)) +
@@ -224,14 +271,13 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       "wg_lag2" = "2",
       "wg_lag3" = "3"
     )) +
-    labs(title = paste("Immigration", title),
+    labs("",
       x = "Time",
       y = "Estimate") +
     theme_minimal()
   print(g)
   dev.off()
 
-  # pdf(paste0("output/em_over_min_wage_", title, ".pdf"), width = 8, height = 6)
   png(paste0("output/em_over_min_wage_", title, ".png"), width = 8, height = 6, units = "in", res = 300)
   # Plot the estimates and standard errors for model 2
   g <- ggplot(plot_data, aes(x = Variable, y = Estimate_2)) +
@@ -248,12 +294,66 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       "wg_lag2" = "2",
       "wg_lag3" = "3"
     )) +
-    labs(title = paste("Emigration", title),
+    labs(title = "",
         x = "Time",
         y = "Estimate") +
     theme_minimal()
   print(g)
   dev.off()
+
+  png(paste0("output/net_over_min_wage_", title, ".png"), width = 8, height = 6, units = "in", res = 300)
+  # Plot the estimates and standard errors for model 3
+  g <- ggplot(plot_data, aes(x = Variable, y = Estimate_3)) +
+    geom_point() +
+    geom_errorbar(
+      aes(ymin = Estimate_3 - SE_3, ymax = Estimate_3 + SE_3), width = 0.2
+    ) +
+    scale_x_discrete(labels = c(
+      "wg_lead3" = "-3",
+      "wg_lead2" = "-2",
+      "wg_lead1" = "-1",
+      "wg" = "0",
+      "wg_lag1" = "1",
+      "wg_lag2" = "2",
+      "wg_lag3" = "3"
+    )) +
+    labs(title = "",
+        x = "Time",
+        y = "Estimate") +
+    theme_minimal()
+  print(g)
+  dev.off()
+
+  m1 <- model_imm_no_controls
+  m2 <- model_imm_controls
+  m3 <- model_em_no_controls
+  m4 <- model_em_controls
+  m5 <- model_net_no_controls
+  m6 <- model_net_controls
+  # Use stargazer to create the table and save it as an HTML file
+  
+  s1 <- summary_imm_no_controls$coefficients[, "Std. Error"]
+  s2 <- summary_imm_controls$coefficients[, "Std. Error"]
+  s3 <- summary_em_no_controls$coefficients[, "Std. Error"]
+  s4 <- summary_em_controls$coefficients[, "Std. Error"]
+  s5 <- summary_net_no_controls$coefficients[, "Std. Error"]
+  s6 <- summary_net_controls$coefficients[, "Std. Error"]
+# Use stargazer to create the table and save it as an HTML file
+  stargazer(
+    m1,
+    m2,
+    m3,
+    m4,
+    m5,
+    m6,
+    type = "html",
+    out = paste0("output/immigration_emigration_models_", title, ".html"),
+    se = list(s1, s2, s3, s4, s5, s6),
+    p.auto = TRUE,
+    omit = c("geo.*", "factor.*", "schengen_dummy", "gdp", "migrant_stock"),
+    omit.labels = c("Country", "Time", "Schengen", "GDP", "Migrant Stock"),
+    omit.yes.no = c("Yes", "No")
+  )
 }
 
 imm_base <- get_eurostat(IMM_AGE_SEX, time_format = "num", type = "label") %>%
@@ -354,3 +454,5 @@ nrow(rows_with_na)
 
 wg_base %>% filter(wg == 0) %>% view()
 wg_base %>% select(geo) %>% distinct() %>% print(n=50)
+
+library(stargazer)
