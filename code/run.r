@@ -215,10 +215,18 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
   g <- ggplot(plot_data, aes(x = Variable, y = Estimate_1)) +
     geom_point() +
     geom_errorbar(aes(ymin = Estimate_1 - SE_1, ymax = Estimate_1 + SE_1), width = 0.2) +
+    scale_x_discrete(labels = c(
+      "wg_lead3" = "-3",
+      "wg_lead2" = "-2",
+      "wg_lead1" = "-1",
+      "wg" = "0",
+      "wg_lag1" = "1",
+      "wg_lag2" = "2",
+      "wg_lag3" = "3"
+    )) +
     labs(title = paste("Immigration", title),
-        x = "Variables",
-        y = "Estimate") +
-      # ylim(c(-4, 4)) +
+      x = "Time",
+      y = "Estimate") +
     theme_minimal()
   print(g)
   dev.off()
@@ -231,9 +239,17 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
     geom_errorbar(
       aes(ymin = Estimate_2 - SE_2, ymax = Estimate_2 + SE_2), width = 0.2
     ) +
-    # ylim(c(-4, 4)) + 
+    scale_x_discrete(labels = c(
+      "wg_lead3" = "-3",
+      "wg_lead2" = "-2",
+      "wg_lead1" = "-1",
+      "wg" = "0",
+      "wg_lag1" = "1",
+      "wg_lag2" = "2",
+      "wg_lag3" = "3"
+    )) +
     labs(title = paste("Emigration", title),
-        x = "Variables",
+        x = "Time",
         y = "Estimate") +
     theme_minimal()
   print(g)
@@ -241,7 +257,9 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
 }
 
 imm_base <- get_eurostat(IMM_AGE_SEX, time_format = "num", type = "label") %>%
-  filter(age == "Total", agedef == "Age in completed years") %>%
+  filter(age == "Total", 
+    agedef == "Age in completed years",
+    geo != "European Union - 27 countries (from 2020)") %>%
   rename(imm = "values")
 em_base <- get_eurostat("migr_emi2", time_format = "num", type = "label") %>%
   filter(age == "Total", agedef == "Age in completed years") %>%
@@ -319,3 +337,20 @@ migration_over_rel_min_wg(
   "citizenship_schengen",
   use_schengen_dummy = FALSE
 )
+
+
+
+nrow(imm_total) / (length(unique(imm_total$geo)) * (max(imm_total$TIME_PERIOD) - min(imm_total$TIME_PERIOD)))
+nrow(em_total) / (length(unique(em_total$geo)) * (max(em_total$TIME_PERIOD) - min(em_total$TIME_PERIOD)))
+
+data <- wg_base %>%
+    left_join(imm_total, by = c("geo", "TIME_PERIOD")) %>%
+    left_join(em_total, by = c("geo", "TIME_PERIOD")) %>%
+    left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD")) %>%
+    left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD")) %>%
+    left_join(migrant_stocks, by = c("geo", "TIME_PERIOD"))
+rows_with_na <- data %>% filter(if_any(everything(), is.na))
+nrow(rows_with_na)
+
+wg_base %>% filter(wg == 0) %>% view()
+wg_base %>% select(geo) %>% distinct() %>% print(n=50)
