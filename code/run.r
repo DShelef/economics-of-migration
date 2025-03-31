@@ -53,13 +53,16 @@ POPULATION <- "demo_pjan" # Population
 IMM_AGE_GROUP_SEX_CITIZENSHIP <- "migr_imm1ctz"
 EM_AGE_GROUP_SEX_CITIZENSHIP <- "migr_emi1ctz"
 GDP_PER_CAPITA <- "sdg_08_10"
+# INCOME_QUANTILES <- "ilc_di03" # median
+INCOME_QUANTILES <- "ilc_di01" # Income quantiles
 
 schengen <- read_excel("data/schengen_date.xlsx")
 # Add Schengen dummy variable
 schengen <- schengen %>% 
   mutate(schengen_year = year(Schengen_Date)) %>%
   mutate(schengen_year = ifelse(is.na(schengen_year), Inf, schengen_year))
-
+eu <- read_excel("data/eu_date.xlsx")
+eu <- eu %>% mutate(geo = str_to_title(geo))
 pop <- get_eurostat(POPULATION, time_format = "num", type = "label")
 pop <- pop %>% filter(age == "Total", sex == "Total") %>%
   rename(pop = "values")
@@ -102,8 +105,24 @@ interpolate_years <- function(df, value_col) {
     mutate(!!value_col := zoo::na.approx(!!sym(value_col), na.rm = FALSE)) %>%
     ungroup()
 }
-
 migrant_stocks <- interpolate_years(migrant_stocks, "migrant_stock")
+income <- get_eurostat(INCOME_QUANTILES, time_format = "num", type = "label")
+# income <- income %>% filter(
+#   freq == "Annual",
+#   age == "Total",
+#   sex == "Total",
+#   indic_il == "Median equivalised net income",
+#   unit == "Purchasing power standard (PPS)",
+# ) %>%
+  # rename(income = "values")
+income <- income %>% filter(
+  freq == "Annual",
+  quantile == "First decile",
+  indic_il == "Top cut-off point",
+  currency == "Purchasing Power Standard"  
+) %>%
+  rename(income = "values")
+
 
 migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = TRUE){
   data <- wg %>%
@@ -111,11 +130,16 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
     left_join(em, by = c("geo", "TIME_PERIOD")) %>%
     left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD")) %>%
     left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD")) %>%
-    left_join(migrant_stocks, by = c("geo", "TIME_PERIOD"))
+    left_join(migrant_stocks, by = c("geo", "TIME_PERIOD")) %>%
+    left_join(income[, c("geo", "TIME_PERIOD", "income")], by = c("geo", "TIME_PERIOD"))
   if(use_schengen_dummy){
-  data <- data %>%
-    left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
-    mutate(schengen_dummy = ifelse(TIME_PERIOD > schengen_year, 1, 0))
+    data <- data %>%
+      left_join(schengen[, c("geo", "schengen_year")], by = "geo") %>%
+      left_join(eu, by = "geo") %>%
+      mutate(
+        schengen_dummy = ifelse(TIME_PERIOD > schengen_year, 1, 0),
+        eu_dummy = ifelse(TIME_PERIOD >= eu_year, 1, 0)
+      )
   }
   data$net <- data$imm - data$em
   # Create lagged variables for rel_min_wg
@@ -123,7 +147,7 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
     group_by(geo) %>%
     arrange(TIME_PERIOD) %>%
     mutate(
-      rel_min_wg_lag1 = lag(rel_min_wg, 1),
+            rel_min_wg_lag1 = lag(rel_min_wg, 1),
       rel_min_wg_lag2 = lag(rel_min_wg, 2),
       rel_min_wg_lag3 = lag(rel_min_wg, 3),
       rel_min_wg_lead1 = lead(rel_min_wg, 1),
@@ -137,16 +161,20 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       wg_lead3 = lead(wg, 3)
     ) %>%
     ungroup()
+  # Create lagged variables for income
+  data <- data %>%
+    group_by(geo) %>%
+    arrange(TIME_PERIOD) %>%
+    mutate(
+      income_lag1 = lag(income, 1),
+      income_lag2 = lag(income, 2),
+      income_lag3 = lag(income, 3),
+      income_lead1 = lead(income, 1),
+      income_lead2 = lead(income, 2),
+      income_lead3 = lead(income, 3)
+    ) %>%
+    ungroup()
 
-  # wg_vars <- c(
-  #   "rel_min_wg_lead3",
-  #   "rel_min_wg_lead2",
-  #   "rel_min_wg_lead1",
-  #   "rel_min_wg",
-  #   "rel_min_wg_lag1",
-  #   "rel_min_wg_lag2",
-  #   "rel_min_wg_lag3"
-  # )
   wg_vars <- c(
     "wg_lead3",
     "wg_lead2",
@@ -179,16 +207,16 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       paste("log(em) ~ geo + factor(TIME_PERIOD) + ",
       paste(wg_vars, collapse = " + ")))
     formula_imm_controls <- as.formula(
-      paste("log(imm) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
+      paste("log(imm) ~ geo + factor(TIME_PERIOD) + eu_dummy + schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
     formula_em_controls <- as.formula(
-      paste("log(em) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
+      paste("log(em) ~ geo + factor(TIME_PERIOD) + eu_dummy + schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
     formula_net_no_controls <- as.formula(
       paste("log(net) ~ geo + factor(TIME_PERIOD) + ",
       paste(wg_vars, collapse = " + ")))
     formula_net_controls <- as.formula(
-      paste("log(net) ~ geo + factor(TIME_PERIOD) + schengen_dummy + gdp + migrant_stock + ",
+      paste("log(net) ~ geo + factor(TIME_PERIOD) + eu_dummy + schengen_dummy + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
   } else {
     formula_imm_no_controls <- as.formula(
@@ -338,7 +366,7 @@ summary_net_controls <- robust_summary(model_net_controls)
   s4 <- summary_em_controls$coefficients[, "Std. Error"]
   s5 <- summary_net_no_controls$coefficients[, "Std. Error"]
   s6 <- summary_net_controls$coefficients[, "Std. Error"]
-# Use stargazer to create the table and save it as an HTML file
+# Use stargazer to create the table and save it as an HTML file450
   stargazer(
     m1,
     m2,
@@ -350,8 +378,75 @@ summary_net_controls <- robust_summary(model_net_controls)
     out = paste0("output/immigration_emigration_models_", title, ".html"),
     se = list(s1, s2, s3, s4, s5, s6),
     p.auto = TRUE,
-    omit = c("geo.*", "factor.*", "schengen_dummy", "gdp", "migrant_stock"),
-    omit.labels = c("Country", "Time", "Schengen", "GDP", "Migrant Stock"),
+    # omit = c("geo.*", "factor.*", "schengen_dummy", "gdp", "migrant_stock"),
+    # omit.labels = c("Country", "Time", "Schengen Member", "GDP", "Migrant Stock"),
+    omit = c("geo.*", "factor.*", "gdp", "migrant_stock", "eu_dummy", "schengen_dummy"),
+    omit.labels = c("Country", "Time", "GDP", "Migrant Stock", "EU Member", "Schengen Member"),
+    omit.yes.no = c("Yes", "No")
+  )
+
+  income_vars <- c(
+    "income_lead3",
+    "income_lead2",
+    "income_lead1",
+    "income",
+    "income_lag1",
+    "income_lag2",
+    "income_lag3"
+  )
+  # Fill missing values for lag variables with the closest value after it
+  for (var in income_vars[grep("lag", income_vars)]) {
+    data <- data %>%
+      group_by(geo) %>%
+      mutate(!!sym(var) := zoo::na.locf(!!sym(var), fromLast = TRUE, na.rm = FALSE)) %>%
+      ungroup()
+  }
+  # Fill missing values for lead variables with the closest value before it
+  for (var in income_vars[grep("lead", income_vars)]) {
+    data <- data %>%
+      group_by(geo) %>%
+      mutate(!!sym(var) := zoo::na.locf(!!sym(var), na.rm = FALSE)) %>%
+      ungroup()
+  }
+  model_imm_income <- lm(
+    log(imm) ~ geo + factor(TIME_PERIOD) + migrant_stock + gdp +
+      eu_dummy + schengen_dummy +
+      income_lead3 + income_lead2 + income_lead1 + income +
+      income_lag1 + income_lag2 + income_lag3,
+    data = data, weights = pop
+  )
+  model_em_income <- lm(
+    log(em) ~ geo + factor(TIME_PERIOD) + migrant_stock + gdp +
+      eu_dummy + schengen_dummy +
+      income_lead3 + income_lead2 + income_lead1 + income +
+      income_lag1 + income_lag2 + income_lag3,
+    data = data, weights = pop
+  )
+  model_net_income <- lm(
+    log(net) ~ geo + factor(TIME_PERIOD) + migrant_stock + gdp +
+      eu_dummy + schengen_dummy +
+      income_lead3 + income_lead2 + income_lead1 + income +
+      income_lag1 + income_lag2 + income_lag3,
+    data = data, weights = pop
+  )
+  # Replace standard errors with robust ones
+  summary_imm_income <- robust_summary(model_imm_income)
+  summary_em_income <- robust_summary(model_em_income)
+  summary_net_income <- robust_summary(model_net_income)
+  stargazer(
+    model_imm_income,
+    model_em_income,
+    model_net_income,
+    type = "html",
+    out = paste0("output/income_models_", title, ".html"),
+    se = list(
+      summary_imm_income$coefficients[, "Std. Error"],
+      summary_em_income$coefficients[, "Std. Error"],
+      summary_net_income$coefficients[, "Std. Error"]
+    ),
+    p.auto = TRUE,
+    omit = c("geo.*", "factor.*", "gdp", "migrant_stock", "eu_dummy", "schengen_dummy"),
+    omit.labels = c("Country", "Time", "GDP", "Migrant Stock", "EU Member", "Schengen Member"),
     omit.yes.no = c("Yes", "No")
   )
 }
@@ -365,7 +460,7 @@ em_base <- get_eurostat("migr_emi2", time_format = "num", type = "label") %>%
   filter(age == "Total", agedef == "Age in completed years") %>%
   rename(em = "values")
 
-imm_total <- imm_base %>% 
+imm_total <- imm_base %>%
   filter(TIME_PERIOD <= 2015) %>%
   group_by(geo, TIME_PERIOD) %>%
   summarise(imm = sum(imm, na.rm = TRUE))
