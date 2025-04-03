@@ -7,43 +7,32 @@ library(lfe)
 library(AER)
 library(rootSolve)
 library(abind)
-library(numDeriv)
 library(eurostat)
 library(tidyverse)
-
 library(Cairo)
-
-library(e1071)
-library(numDeriv)
 library(tinytex)
 library(stargazer)
 library(statar)
-
 library(fixest)
-
-
 library(dplyr)
 library(tidyr)
 library(tools)
 library(ggplot2)
 library(reshape2)
-
 library(readr)
 library(kableExtra)
-
-
 library(knitr)
 library(gridExtra)
 library(grid)
-
 library(purrr)
 library(broom)
-
 library(nleqslv)
 library(BB)
 library(stringr)
 library(haven)
 library(readxl)
+
+
 setwd("C:\\Users\\ozzyz\\Documents\\University\\Immigration\\economics-of-migration")
 
 IMM_AGE_SEX <- "migr_imm8" # Emigration by age and sex
@@ -238,10 +227,6 @@ migration_over_rel_min_wg <- function(wg, imm, em, title, use_schengen_dummy = T
       paste("log(net) ~ geo + factor(TIME_PERIOD) + gdp + migrant_stock + ",
       paste(wg_vars, collapse = " + ")))
   }
-# Load necessary libraries
-library(sandwich)
-library(lmtest)
-library(stargazer)
 
 # Custom summary function to replace standard errors with robust ones
 robust_summary <- function(model) {
@@ -481,73 +466,3 @@ imm_females <- imm_base %>%
 em_females <- em_base %>%
   filter(sex == "Females", TIME_PERIOD <= 2015)
 migration_over_rel_min_wg(wg_base, imm_females, em_females, "females")
-
-schengen_2001 <- schengen %>% 
-  filter(schengen_year <= 2001) %>%
-  select(geo)
-imm_citizenship <- get_eurostat(IMM_AGE_GROUP_SEX_CITIZENSHIP, time_format = "num", type = "label")
-em_citizenship <- get_eurostat(EM_AGE_GROUP_SEX_CITIZENSHIP, time_format = "num", type = "label")
-
-wg_schengen <- wg_base %>% 
-  filter(geo %in% schengen_2001$geo)
-avg_min_wg_schengen <- wg_schengen %>% group_by(TIME_PERIOD) %>%
-  summarise(avg_min_wg = mean(wg, na.rm = TRUE)
-  )
-wg_schengen <- wg_schengen %>% select(-avg_min_wg)
-wg_schengen <- wg_schengen %>% left_join(avg_min_wg_schengen, by = "TIME_PERIOD")
-wg_schengen <- wg_schengen %>% mutate(rel_min_wg = wg/avg_min_wg)
-
-imm_citizenship_shcengen <- imm_citizenship %>% 
-  filter(
-    freq == "Annual",
-    citizen %in% schengen_2001$geo,
-    agedef == "Age in completed years",
-    age == "Total",
-    unit == "Number",
-    sex == "Total",
-    geo %in% schengen_2001$geo
-  )
-imm_citizenship_shcengen <- imm_citizenship_shcengen %>%
-  group_by(geo, TIME_PERIOD) %>%
-  summarise(imm = sum(values, na.rm = TRUE))
-
-em_citizenship_shcengen <- em_citizenship %>%
-  filter(
-    freq == "Annual",
-    citizen %in% schengen_2001$geo,
-    agedef == "Age in completed years",
-    age == "Total",
-    unit == "Number",
-    sex == "Total",
-    geo %in% schengen_2001$geo
-  )
-em_citizenship_shcengen <- em_citizenship_shcengen %>%
-  group_by(geo, TIME_PERIOD) %>%
-  summarise(em = sum(values, na.rm = TRUE))
-
-migration_over_rel_min_wg(
-  wg_schengen,
-  imm_citizenship_shcengen,
-  em_citizenship_shcengen,
-  "citizenship_schengen",
-  use_schengen_dummy = FALSE
-)
-
-
-
-nrow(imm_total) / (length(unique(imm_total$geo)) * (max(imm_total$TIME_PERIOD) - min(imm_total$TIME_PERIOD)))
-nrow(em_total) / (length(unique(em_total$geo)) * (max(em_total$TIME_PERIOD) - min(em_total$TIME_PERIOD)))
-
-data <- wg_base %>%
-    left_join(imm_total, by = c("geo", "TIME_PERIOD")) %>%
-    left_join(em_total, by = c("geo", "TIME_PERIOD")) %>%
-    left_join(pop[, c("geo", "TIME_PERIOD", "pop")] , by = c("geo", "TIME_PERIOD")) %>%
-    left_join(gdp[, c("geo", "TIME_PERIOD", "gdp")], by = c("geo", "TIME_PERIOD")) %>%
-    left_join(migrant_stocks, by = c("geo", "TIME_PERIOD"))
-rows_with_na <- data %>% filter(if_any(everything(), is.na))
-nrow(rows_with_na)
-
-wg_base %>% filter(wg == 0) %>% view()
-wg_base %>% select(geo) %>% distinct() %>% print(n=50)
-
-library(stargazer)

@@ -1,0 +1,252 @@
+
+<table style="text-align:center"><tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="6"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="6" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td colspan="2">log(imm)</td><td colspan="2">log(em)</td><td colspan="2">log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td><td>(5)</td><td>(6)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">wg_lead3</td><td>-0.0001</td><td>-0.0001</td><td>-0.001<sup>***</sup></td><td>-0.0003<sup>**</sup></td><td>0.001<sup>***</sup></td><td>0.001<sup>**</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead2</td><td>0.0002</td><td>0.0002</td><td>0.0001</td><td>0.0001</td><td>0.0001</td><td>0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead1</td><td>0.0004</td><td>0.0002</td><td>0.0004</td><td>0.0003<sup>**</sup></td><td>0.0003</td><td>0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg</td><td>0.0003</td><td>0.0004<sup>***</sup></td><td>0.00004</td><td>-0.00000</td><td>0.0003</td><td>0.0003<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag1</td><td>0.001<sup>*</sup></td><td>0.002<sup>**</sup></td><td>0.002<sup>***</sup></td><td>0.003<sup>***</sup></td><td>-0.001</td><td>-0.002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag2</td><td>-0.0001</td><td>-0.0005</td><td>0.001</td><td>0.0004</td><td>-0.0004</td><td>-0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag3</td><td>-0.001</td><td>-0.001</td><td>-0.001<sup>***</sup></td><td>-0.0001</td><td>0.001<sup>***</sup></td><td>-0.002<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.0004)</td><td>(0.001)</td><td>(0.0004)</td><td>(0.001)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>11.981<sup>***</sup></td><td>9.737<sup>***</sup></td><td>11.624<sup>***</sup></td><td>15.699<sup>***</sup></td><td>11.025<sup>***</sup></td><td>-0.871</td></tr>
+<tr><td style="text-align:left"></td><td>(0.222)</td><td>(1.128)</td><td>(0.200)</td><td>(1.381)</td><td>(0.316)</td><td>(3.140)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>494</td><td>381</td><td>486</td><td>378</td><td>361</td><td>267</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.883</td><td>0.922</td><td>0.887</td><td>0.934</td><td>0.806</td><td>0.833</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.869</td><td>0.910</td><td>0.873</td><td>0.924</td><td>0.776</td><td>0.798</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>2,058.589 (df = 438)</td><td>1,765.055 (df = 329)</td><td>1,917.868 (df = 431)</td><td>1,507.720 (df = 326)</td><td>2,679.095 (df = 311)</td><td>2,701.226 (df = 220)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>60.234<sup>***</sup> (df = 55; 438)</td><td>76.209<sup>***</sup> (df = 51; 329)</td><td>62.734<sup>***</sup> (df = 54; 431)</td><td>90.477<sup>***</sup> (df = 51; 326)</td><td>26.413<sup>***</sup> (df = 49; 311)</td><td>23.880<sup>***</sup> (df = 46; 220)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="6" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+
+<table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="3" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>log(imm)</td><td>log(em)</td><td>log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">income_lead3</td><td>-0.0001</td><td>-0.0003<sup>**</sup></td><td>0.0002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead2</td><td>0.0003<sup>**</sup></td><td>-0.0001</td><td>0.001<sup>**</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead1</td><td>-0.00001</td><td>-0.00002</td><td>0.00003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income</td><td>0.0002<sup>**</sup></td><td>0.0001</td><td>-0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag1</td><td>-0.0001</td><td>0.0001</td><td>-0.001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag2</td><td>-0.00000</td><td>0.00001</td><td>-0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag3</td><td>0.0001</td><td>0.0002</td><td>-0.0004<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>7.658<sup>***</sup></td><td>12.896<sup>***</sup></td><td>7.810<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.429)</td><td>(1.492)</td><td>(4.615)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>301</td><td>299</td><td>208</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.917</td><td>0.910</td><td>0.801</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.900</td><td>0.892</td><td>0.748</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>1,641.203 (df = 250)</td><td>1,597.142 (df = 248)</td><td>3,028.598 (df = 164)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>54.980<sup>***</sup> (df = 50; 250)</td><td>50.430<sup>***</sup> (df = 50; 248)</td><td>15.310<sup>***</sup> (df = 43; 164)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="3" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+
+<table style="text-align:center"><tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="6"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="6" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td colspan="2">log(imm)</td><td colspan="2">log(em)</td><td colspan="2">log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td><td>(5)</td><td>(6)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">wg_lead3</td><td>-0.0001</td><td>-0.0001</td><td>-0.001<sup>***</sup></td><td>-0.0003<sup>*</sup></td><td>0.001<sup>***</sup></td><td>0.001<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td><td>(0.0002)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead2</td><td>0.0002</td><td>0.0002</td><td>0.0001</td><td>0.0001</td><td>0.0003</td><td>0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead1</td><td>0.0004</td><td>0.0002</td><td>0.0004</td><td>0.0002<sup>**</sup></td><td>0.0001</td><td>0.0002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg</td><td>0.0003</td><td>0.0004<sup>***</sup></td><td>0.00005</td><td>0.00000</td><td>0.0003</td><td>0.0004</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag1</td><td>0.001<sup>*</sup></td><td>0.002<sup>**</sup></td><td>0.002<sup>***</sup></td><td>0.003<sup>***</sup></td><td>-0.001</td><td>-0.003<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag2</td><td>-0.0001</td><td>-0.001</td><td>0.0005</td><td>0.0003</td><td>0.00000</td><td>0.0004</td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag3</td><td>-0.001</td><td>-0.001</td><td>-0.001<sup>***</sup></td><td>-0.0001</td><td>0.001<sup>**</sup></td><td>-0.003<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.0005)</td><td>(0.001)</td><td>(0.0004)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>10.662<sup>***</sup></td><td>7.778<sup>***</sup></td><td>10.397<sup>***</sup></td><td>13.857<sup>***</sup></td><td>9.534<sup>***</sup></td><td>-7.282<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.236)</td><td>(1.220)</td><td>(0.210)</td><td>(1.452)</td><td>(0.326)</td><td>(2.790)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>483</td><td>373</td><td>471</td><td>370</td><td>338</td><td>257</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.872</td><td>0.920</td><td>0.885</td><td>0.932</td><td>0.814</td><td>0.860</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.856</td><td>0.907</td><td>0.870</td><td>0.922</td><td>0.780</td><td>0.827</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>2,165.818 (df = 427)</td><td>1,801.946 (df = 321)</td><td>1,983.714 (df = 416)</td><td>1,561.095 (df = 318)</td><td>2,732.574 (df = 285)</td><td>2,576.898 (df = 207)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>53.015<sup>***</sup> (df = 55; 427)</td><td>72.013<sup>***</sup> (df = 51; 321)</td><td>59.108<sup>***</sup> (df = 54; 416)</td><td>86.109<sup>***</sup> (df = 51; 318)</td><td>23.983<sup>***</sup> (df = 52; 285)</td><td>26.014<sup>***</sup> (df = 49; 207)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="6" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+
+<table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="3" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>log(imm)</td><td>log(em)</td><td>log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">income_lead3</td><td>-0.0001</td><td>-0.0003<sup>**</sup></td><td>-0.0004<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead2</td><td>0.0003<sup>**</sup></td><td>-0.0001</td><td>0.001<sup>**</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead1</td><td>0.00001</td><td>-0.00001</td><td>0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income</td><td>0.0002<sup>**</sup></td><td>0.0001</td><td>-0.00002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag1</td><td>-0.0001</td><td>0.0001</td><td>-0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag2</td><td>-0.00004</td><td>0.00003</td><td>-0.0002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag3</td><td>0.0001</td><td>0.0002</td><td>-0.001<sup>**</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>5.043<sup>***</sup></td><td>11.292<sup>***</sup></td><td>6.016</td></tr>
+<tr><td style="text-align:left"></td><td>(1.443)</td><td>(1.577)</td><td>(4.695)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>294</td><td>292</td><td>199</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.914</td><td>0.910</td><td>0.836</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.896</td><td>0.891</td><td>0.786</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>1,668.181 (df = 243)</td><td>1,619.469 (df = 241)</td><td>2,928.396 (df = 152)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>51.346<sup>***</sup> (df = 50; 243)</td><td>48.456<sup>***</sup> (df = 50; 241)</td><td>16.832<sup>***</sup> (df = 46; 152)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="3" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+
+<table style="text-align:center"><tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="6"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="6" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td colspan="2">log(imm)</td><td colspan="2">log(em)</td><td colspan="2">log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td><td>(5)</td><td>(6)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">wg_lead3</td><td>-0.0001</td><td>-0.0001</td><td>-0.001<sup>***</sup></td><td>-0.0003<sup>**</sup></td><td>0.001<sup>***</sup></td><td>0.0002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead2</td><td>0.0002</td><td>0.0002</td><td>0.0001</td><td>0.0001</td><td>0.0001</td><td>0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lead1</td><td>0.0003</td><td>0.0002</td><td>0.0003</td><td>0.0003<sup>**</sup></td><td>0.0002</td><td>0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0001)</td><td>(0.0002)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg</td><td>0.0002</td><td>0.0003<sup>**</sup></td><td>0.00003</td><td>-0.00001</td><td>0.001<sup>*</sup></td><td>0.001<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0004)</td><td>(0.0001)</td><td>(0.0003)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag1</td><td>0.001<sup>*</sup></td><td>0.002<sup>**</sup></td><td>0.002<sup>***</sup></td><td>0.003<sup>***</sup></td><td>-0.001</td><td>-0.001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag2</td><td>-0.0002</td><td>-0.0005</td><td>0.001</td><td>0.0005</td><td>-0.001</td><td>-0.001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">wg_lag3</td><td>-0.001</td><td>-0.001</td><td>-0.001<sup>***</sup></td><td>-0.0003</td><td>0.001<sup>***</sup></td><td>-0.002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0005)</td><td>(0.001)</td><td>(0.0004)</td><td>(0.001)</td><td>(0.0004)</td><td>(0.002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>10.498<sup>***</sup></td><td>7.570<sup>***</sup></td><td>10.073<sup>***</sup></td><td>13.719<sup>***</sup></td><td>9.702<sup>***</sup></td><td>-0.059</td></tr>
+<tr><td style="text-align:left"></td><td>(0.223)</td><td>(1.166)</td><td>(0.195)</td><td>(1.420)</td><td>(0.306)</td><td>(2.313)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>483</td><td>373</td><td>471</td><td>370</td><td>345</td><td>260</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.894</td><td>0.931</td><td>0.888</td><td>0.934</td><td>0.822</td><td>0.849</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.880</td><td>0.919</td><td>0.873</td><td>0.923</td><td>0.793</td><td>0.817</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>1,973.799 (df = 427)</td><td>1,678.765 (df = 321)</td><td>1,907.084 (df = 416)</td><td>1,503.743 (df = 318)</td><td>2,551.193 (df = 295)</td><td>2,540.935 (df = 213)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>65.450<sup>***</sup> (df = 55; 427)</td><td>84.285<sup>***</sup> (df = 51; 321)</td><td>60.997<sup>***</sup> (df = 54; 416)</td><td>87.796<sup>***</sup> (df = 51; 318)</td><td>27.823<sup>***</sup> (df = 49; 295)</td><td>26.059<sup>***</sup> (df = 46; 213)</td></tr>
+<tr><td colspan="7" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="6" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+
+<table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="3" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>log(imm)</td><td>log(em)</td><td>log(net)</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">income_lead3</td><td>-0.0001</td><td>-0.0003<sup>**</sup></td><td>-0.00001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead2</td><td>0.0002<sup>**</sup></td><td>-0.00004</td><td>0.001<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lead1</td><td>0.00001</td><td>-0.00001</td><td>0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income</td><td>0.0002<sup>**</sup></td><td>0.00004</td><td>0.0002</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag1</td><td>-0.0001</td><td>0.0001</td><td>-0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag2</td><td>-0.00003</td><td>-0.00001</td><td>-0.0003</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">income_lag3</td><td>0.0001</td><td>0.0002</td><td>-0.0001</td></tr>
+<tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.0002)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>4.894<sup>***</sup></td><td>11.594<sup>***</sup></td><td>3.243</td></tr>
+<tr><td style="text-align:left"></td><td>(1.317)</td><td>(1.582)</td><td>(3.796)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Country</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Time</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">GDP</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Migrant Stock</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">EU Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td style="text-align:left">Schengen Member</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>294</td><td>292</td><td>203</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.934</td><td>0.910</td><td>0.838</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.920</td><td>0.891</td><td>0.795</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>1,485.282 (df = 243)</td><td>1,616.917 (df = 241)</td><td>2,638.010 (df = 159)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>68.231<sup>***</sup> (df = 50; 243)</td><td>48.498<sup>***</sup> (df = 50; 241)</td><td>19.189<sup>***</sup> (df = 43; 159)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="3" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
